@@ -10,24 +10,22 @@ from cli import get_query_cli
 
 
 def get_response(query: str) -> types.GenerateContentResponse:
-    messages = [
-        types.Content(role="user", parts=[types.Part(text=(get_query_cli()[0]))])
-    ]
+    messages = [types.Content(role="user", parts=[types.Part(text=query)])]
     response = client.models.generate_content(model=MODEL_ID, contents=messages)
     return response
 
 
 def get_metadata(response: types.GenerateContentResponse):
-    try:
-        meta_data = response.usage_metadata
-        return meta_data
-    except Exception:
+    meta_data = response.usage_metadata
+
+    if not meta_data:
         raise RuntimeError("Please input a valid API Key")
+    return meta_data
 
 
 if __name__ == "__main__":
     user_query, verbose = get_query_cli()
-    response = get_response(user_query)
+    response = get_response(user_query[0])
 
     if verbose:
         meta_data = get_metadata(response)
