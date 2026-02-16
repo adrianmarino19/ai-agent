@@ -11,3 +11,5 @@ if not api_key:
     raise RuntimeError("Please input a valid API Key")
 
 client = genai.Client(api_key=api_key)
+
+MAX_CHARS = 10000
