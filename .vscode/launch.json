@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug main.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/main.py",
+      "args": ["${input:query}"],
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "Debug main.py (verbose)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/main.py",
+      "args": ["${input:query}", "--verbose"],
+      "console": "integratedTerminal",
+      "justMyCode": false
+    }
+  ],
+  "inputs": [
+    {
+      "id": "query",
+      "type": "promptString",
+      "description": "Enter your query",
+      "default": "what files are in the pkg directory?"
+    }
+  ]
+}
