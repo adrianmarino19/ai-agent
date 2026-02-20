@@ -36,7 +36,6 @@ def generate_response(
         print(f"User prompt: {user_query}")
         print(f"Prompt tokens: {meta_data.prompt_token_count}")
         print(f"Response tokens: {meta_data.candidates_token_count}")
-        return
 
     if response.text:
         return f"Response: {response.text}"
@@ -44,7 +43,6 @@ def generate_response(
         function_call = response.function_calls
         for function in function_call:
             print(f"Calling function: {function.name}({function.args})")
-            return
 
 
 if __name__ == "__main__":
