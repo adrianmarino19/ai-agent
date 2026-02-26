@@ -13,3 +13,5 @@ if not api_key:
 client = genai.Client(api_key=api_key)
 
 MAX_CHARS = 10000
+WORKING_DIR = "./calculator"
+MAX_ITERS = 20

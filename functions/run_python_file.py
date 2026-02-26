@@ -3,7 +3,6 @@ import subprocess
 
 from google.genai import types
 
-
 # Declaration function.
 schema_run_python_file = types.FunctionDeclaration(
     name="run_python_file",

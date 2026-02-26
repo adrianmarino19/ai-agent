@@ -2,7 +2,6 @@ import os
 
 from google.genai import types
 
-
 # Declaration function.
 schema_write_file = types.FunctionDeclaration(
     name="write_file",

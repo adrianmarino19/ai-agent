@@ -1,10 +1,10 @@
 from typing import Any
 
-
 from functions.get_files_info import schema_get_files_info, get_files_info
 from functions.get_file_content import schema_get_file_content, get_file_content
 from functions.write_file import schema_write_file, write_file
 from functions.run_python_file import schema_run_python_file, run_python_file
+from config import WORKING_DIR
 
 from google.genai import types
 
@@ -26,54 +26,37 @@ FUNCTION_MAP = {
 
 
 def call_function(
-    function_call: list[types.FunctionCall],
+    function_call: types.FunctionCall,
     verbose: bool = False,
 ) -> types.Content:
-    function_result = []
 
-    for function in function_call:
-        if function.name in FUNCTION_MAP:
-            function_name = function.name or ""
-            function_args = dict[str, Any](function.args) if function.args else {}
-            function_args["working_directory"] = "./calculator"
+    function_name = function_call.name or ""
 
-            if not verbose:
-                print(f" - Calling function: {function.name}")
-            else:
-                print(f"Calling function: {function.name}({function.args})")
+    if not verbose:
+        print(f" - Calling function: {function_name}")
+    else:
+        print(f" - Calling function: {function_name}({function_call.args})")
 
-            function_result.append(FUNCTION_MAP[function_name](**function_args))
+    if function_name not in FUNCTION_MAP:
+        unknown_function = types.Content(
+            role="tool",
+            parts=[
+                types.Part.from_function_response(
+                    name=function_name,
+                    response={"error": f"Unknown function: {function_name}"},
+                )
+            ],
+        )
+        return unknown_function
 
-            return types.Content(
-                role="tool",
-                parts=[
-                    types.Part.from_function_response(
-                        name=function_name,
-                        response={"result": function_result},
-                    )
-                ],
-            )
+    args = dict[str, Any](function_call.args) if function_call.args else {}
+    args["working_directory"] = WORKING_DIR
 
-        # So this can only call one function....
+    part = [
+        types.Part.from_function_response(
+            name=function_name,
+            response={"result": FUNCTION_MAP[function_name](**args)},
+        )
+    ]
 
-        else:
-            return types.Content(
-                role="tool",
-                parts=[
-                    types.Part.from_function_response(
-                        name=function_name,
-                        response={"error": f"Unknown function: {function_name}"},
-                    )
-                ],
-            )
-
-
-# return types.Content(
-#     role="tool",
-#     parts=[
-#         types.Part.from_function_response(
-#             name=function_name,
-#             response={"error": f"Unknown function: {function_name}"},
-#         )
-#     ],
-# )
+    return types.Content(role="tool", parts=part)
