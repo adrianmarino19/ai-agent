@@ -67,25 +67,23 @@ def generate_response(
     return None
 
 
-# def agent_loop(client, messages, verbose):
-#     for _ in MAX_ITERS:
-#         response = generate_response(client, messages, verbose)
-#         for candidate in response.candidates:
-#             messages.append(response.candidates.content)
+def run_agent(client, messages, verbose):
+    for _ in range(MAX_ITERS):
+        try:
+            final_response = generate_response(client, messages, verbose)
+            if final_response:
+                print("Final result:")
+                print(final_response)
+                return
+        except Exception as e:
+            print(f"Error in generating content: {e}")
 
 
 def main():
     query, verbose = get_query_cli()
     messages = [types.Content(role="user", parts=[types.Part(text=query)])]
-    response = generate_response(query, messages, verbose)
+    run_agent(client, messages, verbose)
 
 
 if __name__ == "__main__":
     main()
-
-# The types.Content object that we return from call_function should have a non-empty .parts list. If it doesn't, raise an exception.
-# We want to look at the .function_response property of the first item in the list of parts, i.e. .parts[0].function_response. It should be a FunctionResponse object. If it's somehow None, raise an exception.
-# Finally, we need to check the .response field of the FunctionResponse object, i.e. .parts[0].function_response.response. This is where the actual function result will be. If it's None, raise an exception.
-# Whew! Now that we know that some response came back from the function call, add .parts[0] to a list of function results. We'll use that later.
-# If verbose mode is in effect, print the result of the function call like this:
-# print(f"-> {function_call_result.parts[0].function_response.response}")
