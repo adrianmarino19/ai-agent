@@ -82,7 +82,7 @@ def run_agent(client, messages, verbose):
 def main():
     query, verbose = get_query_cli()
     messages = [types.Content(role="user", parts=[types.Part(text=query)])]
-    run_agent(client, messages, verbose)
+    run_agent(query, messages, verbose)
 
 
 if __name__ == "__main__":
